@@ -17,6 +17,7 @@ const steps = [
 ];
 
 const ReportClaim = () => {
+  const [workflowType, setWorkflowType] = useState<"guided" | "quick">("guided");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
@@ -47,6 +48,75 @@ const ReportClaim = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setFormData(prev => ({ ...prev, files: [...prev.files, ...files] }));
+  };
+
+  const renderQuickUploadFlow = () => {
+    return (
+      <div className="space-y-6">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl font-bold mb-4">Quick Document Upload</h2>
+          <p className="text-muted-foreground">Upload all your documents at once and let our AI extract the details</p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="p-8 border-dashed border-2 hover:border-primary transition-colors cursor-pointer">
+            <label className="cursor-pointer">
+              <input type="file" className="hidden" accept=".pdf,image/*" multiple onChange={handleFileUpload} />
+              <div className="text-center">
+                <Upload className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-xl font-semibold mb-2">Upload All Documents</h3>
+                <p className="text-muted-foreground">Police reports, damage photos, invoices, receipts</p>
+                <p className="text-sm text-muted-foreground mt-2">Drag & drop or click to browse</p>
+              </div>
+            </label>
+          </Card>
+          
+          <Card className="p-8 bg-primary/5 border-primary/20">
+            <Bot className="h-16 w-16 mx-auto mb-4 text-primary" />
+            <h3 className="text-xl font-semibold mb-2 text-center">AI Will Extract</h3>
+            <ul className="space-y-2 text-sm text-muted-foreground">
+              <li className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-success" />
+                Policy information from documents
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-success" />
+                Incident date, time, and location
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-success" />
+                Damage assessment from photos
+              </li>
+              <li className="flex items-center gap-2">
+                <CheckCircle className="h-4 w-4 text-success" />
+                Repair costs from invoices
+              </li>
+            </ul>
+          </Card>
+        </div>
+        
+        {formData.files.length > 0 && (
+          <Card className="p-6">
+            <h3 className="font-semibold mb-4">Uploaded Files ({formData.files.length})</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              {formData.files.map((file, index) => (
+                <div key={index} className="flex items-center gap-2 p-3 bg-muted rounded-lg">
+                  <FileText className="h-4 w-4 text-primary" />
+                  <span className="text-sm truncate">{file.name}</span>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-6 text-center">
+              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8">
+                Submit All Documents to AI Agent
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            </div>
+          </Card>
+        )}
+      </div>
+    );
   };
 
   const renderStepContent = () => {
@@ -249,60 +319,92 @@ const ReportClaim = () => {
             <div className="lg:col-span-3">
               <div className="mb-8">
                 <h1 className="text-3xl font-bold text-foreground mb-2">Report a Claim</h1>
-                <p className="text-muted-foreground">We'll guide you through the process step by step</p>
+                <p className="text-muted-foreground">Choose your preferred filing method</p>
               </div>
               
-              {/* Progress Bar */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-4">
-                  {steps.map((step, index) => (
-                    <div key={step.id} className="flex items-center">
-                      <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
-                        currentStep >= step.id ? 'bg-primary text-white border-primary' : 'bg-white border-gray-300 text-gray-400'
-                      }`}>
-                        <step.icon className="h-5 w-5" />
-                      </div>
-                      <div className="ml-3 hidden sm:block">
-                        <p className={`text-sm font-medium ${currentStep >= step.id ? 'text-primary' : 'text-gray-400'}`}>
-                          {step.title}
-                        </p>
-                      </div>
-                      {index < steps.length - 1 && (
-                        <div className={`w-16 h-1 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-gray-200'}`} />
-                      )}
+              {/* Workflow Selection */}
+              <Card className="p-6 mb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Button
+                    variant={workflowType === "guided" ? "default" : "outline"}
+                    onClick={() => setWorkflowType("guided")}
+                    className="h-20 flex-col gap-2"
+                  >
+                    <User className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="font-semibold">Guided Process</div>
+                      <div className="text-xs opacity-75">Step-by-step guidance</div>
                     </div>
-                  ))}
+                  </Button>
+                  <Button
+                    variant={workflowType === "quick" ? "default" : "outline"}
+                    onClick={() => setWorkflowType("quick")}
+                    className="h-20 flex-col gap-2"
+                  >
+                    <Upload className="h-6 w-6" />
+                    <div className="text-center">
+                      <div className="font-semibold">Quick Upload</div>
+                      <div className="text-xs opacity-75">Upload all documents at once</div>
+                    </div>
+                  </Button>
                 </div>
-                <Progress value={(currentStep / steps.length) * 100} className="h-2" />
-              </div>
-              
-              {/* Step Content */}
-              <Card className="p-8 mb-8">
-                <h2 className="text-xl font-semibold mb-6">{steps[currentStep - 1].title}</h2>
-                {renderStepContent()}
               </Card>
               
-              {/* Navigation */}
-              <div className="flex justify-between">
-                <Button 
-                  variant="outline" 
-                  onClick={prevStep} 
-                  disabled={currentStep === 1}
-                  className="flex items-center"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Previous
-                </Button>
-                <Button 
-                  onClick={nextStep} 
-                  disabled={currentStep === 4}
-                  className="flex items-center"
-                >
-                  Next
-                  <ArrowRight className="h-4 w-4 ml-2" />
-                </Button>
-              </div>
-            </div>
+              {workflowType === "quick" ? renderQuickUploadFlow() : (
+                <>
+                  {/* Progress Bar */}
+                  <div className="mb-8">
+                    <div className="flex justify-between items-center mb-4">
+                      {steps.map((step, index) => (
+                        <div key={step.id} className="flex items-center">
+                          <div className={`flex items-center justify-center w-10 h-10 rounded-full border-2 ${
+                            currentStep >= step.id ? 'bg-primary text-white border-primary' : 'bg-white border-gray-300 text-gray-400'
+                          }`}>
+                            <step.icon className="h-5 w-5" />
+                          </div>
+                          <div className="ml-3 hidden sm:block">
+                            <p className={`text-sm font-medium ${currentStep >= step.id ? 'text-primary' : 'text-gray-400'}`}>
+                              {step.title}
+                            </p>
+                          </div>
+                          {index < steps.length - 1 && (
+                            <div className={`w-16 h-1 mx-4 ${currentStep > step.id ? 'bg-primary' : 'bg-gray-200'}`} />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <Progress value={(currentStep / steps.length) * 100} className="h-2" />
+                  </div>
+                  
+                  {/* Step Content */}
+                  <Card className="p-8 mb-8">
+                    <h2 className="text-xl font-semibold mb-6">{steps[currentStep - 1].title}</h2>
+                    {renderStepContent()}
+                  </Card>
+                  
+                  {/* Navigation */}
+                  <div className="flex justify-between">
+                    <Button 
+                      variant="outline" 
+                      onClick={prevStep} 
+                      disabled={currentStep === 1}
+                      className="flex items-center"
+                    >
+                      <ArrowLeft className="h-4 w-4 mr-2" />
+                      Previous
+                    </Button>
+                    <Button 
+                      onClick={nextStep} 
+                      disabled={currentStep === 4}
+                      className="flex items-center"
+                    >
+                      Next
+                      <ArrowRight className="h-4 w-4 ml-2" />
+                    </Button>
+                  </div>
+                </>
+              )}
+        </div>
             
             {/* AI Assistant Sidebar */}
             <div className="lg:col-span-1">
