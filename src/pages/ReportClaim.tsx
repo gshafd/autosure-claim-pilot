@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -17,6 +18,7 @@ const steps = [
 ];
 
 const ReportClaim = () => {
+  const navigate = useNavigate();
   const [workflowType, setWorkflowType] = useState<"guided" | "quick">("guided");
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
@@ -48,6 +50,36 @@ const ReportClaim = () => {
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     setFormData(prev => ({ ...prev, files: [...prev.files, ...files] }));
+  };
+
+  const handleQuickSubmit = () => {
+    if (formData.files.length === 0) {
+      alert("Please upload at least one document before submitting.");
+      return;
+    }
+    
+    // Simulate claim creation and redirect to tracking
+    const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
+    console.log("Quick claim submitted:", { claimId, files: formData.files });
+    
+    // Show success message and redirect
+    alert(`Claim ${claimId} submitted successfully! Redirecting to tracking page...`);
+    navigate("/track-claim");
+  };
+
+  const handleGuidedSubmit = () => {
+    // Validate required fields for guided submission
+    if (!formData.name || !formData.email || !formData.policyNumber) {
+      alert("Please fill in all required claimant details.");
+      return;
+    }
+    
+    const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
+    console.log("Guided claim submitted:", { claimId, formData });
+    
+    // Show success message and redirect
+    alert(`Claim ${claimId} submitted successfully! Redirecting to tracking page...`);
+    navigate("/track-claim");
   };
 
   const renderQuickUploadFlow = () => {
@@ -108,7 +140,12 @@ const ReportClaim = () => {
             </div>
             
             <div className="mt-6 text-center">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8">
+              <Button 
+                size="lg" 
+                onClick={handleQuickSubmit}
+                disabled={formData.files.length === 0}
+                className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8"
+              >
                 Submit All Documents to AI Agent
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
@@ -296,7 +333,11 @@ const ReportClaim = () => {
             </Card>
             
             <div className="text-center">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8">
+              <Button 
+                size="lg" 
+                onClick={handleGuidedSubmit}
+                className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8"
+              >
                 Submit Claim to AI Agent
               </Button>
             </div>
