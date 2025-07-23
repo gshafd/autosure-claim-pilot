@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -14,7 +15,8 @@ import {
   Calculator, 
   Shield, 
   DollarSign, 
-  Mail 
+  Mail,
+  ArrowLeft 
 } from "lucide-react";
 
 const workflowSteps = [
@@ -85,10 +87,28 @@ const workflowSteps = [
 ];
 
 const WorkflowVisualization = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const [progress, setProgress] = useState(0);
+  const [claimData, setClaimData] = useState<any>(null);
+
+  const claimId = searchParams.get('claimId');
+
+  useEffect(() => {
+    if (claimId) {
+      // Get claim data from localStorage
+      const submittedClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+      const claim = submittedClaims.find((c: any) => c.id === claimId);
+      if (claim) {
+        setClaimData(claim);
+        // Auto-start the workflow when coming from claim submission
+        setTimeout(() => setIsRunning(true), 1000);
+      }
+    }
+  }, [claimId]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -153,9 +173,28 @@ const WorkflowVisualization = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">AutoSure AI Workflow Visualization</h1>
-          <p className="text-muted-foreground">Behind-the-scenes autonomous agent pipeline</p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-foreground mb-2">AutoSure AI Workflow Visualization</h1>
+            <p className="text-muted-foreground">Behind-the-scenes autonomous agent pipeline</p>
+          </div>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={() => navigate(-1)}
+              className="flex items-center"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={() => navigate('/dashboard')}
+              className="flex items-center"
+            >
+              View Dashboard
+            </Button>
+          </div>
         </div>
 
         {/* Controls */}
@@ -164,7 +203,12 @@ const WorkflowVisualization = () => {
             <div>
               <h3 className="font-semibold text-lg mb-2">Workflow Controls</h3>
               <p className="text-muted-foreground">
-                Simulating claim processing for: <strong>AS-2024-001234</strong>
+                Simulating claim processing for: <strong>{claimData?.id || "AS-2024-001234"}</strong>
+                {claimData && (
+                  <span className="block text-sm mt-1">
+                    Claimant: {claimData.claimantName} | Policy: {claimData.policyNumber}
+                  </span>
+                )}
               </p>
             </div>
             <div className="flex gap-2">

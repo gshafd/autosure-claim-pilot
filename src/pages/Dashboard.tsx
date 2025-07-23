@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -64,8 +65,33 @@ const claimsData = [
 ];
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("new-claims");
+  const [allClaims, setAllClaims] = useState(claimsData);
+
+  useEffect(() => {
+    // Load submitted claims from localStorage and merge with existing data
+    const submittedClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+    const transformedSubmittedClaims = submittedClaims.map((claim: any) => ({
+      id: claim.id,
+      status: claim.status,
+      claimant: claim.claimantName,
+      estimatedPayout: claim.estimatedPayout,
+      damageType: claim.damageType,
+      aiConfidence: claim.confidenceScore,
+      submittedDate: new Date(claim.submittedAt).toLocaleDateString(),
+      priority: "normal"
+    }));
+
+    // Combine and deduplicate claims
+    const combinedClaims = [...claimsData, ...transformedSubmittedClaims];
+    const uniqueClaims = combinedClaims.filter((claim, index, self) => 
+      index === self.findIndex(c => c.id === claim.id)
+    );
+
+    setAllClaims(uniqueClaims);
+  }, []);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -96,15 +122,15 @@ const Dashboard = () => {
   const filterClaimsByStatus = (status: string) => {
     switch (status) {
       case "new-claims":
-        return claimsData.filter(claim => ["AI Processing", "Pending Approval"].includes(claim.status));
+        return allClaims.filter(claim => ["AI Processing", "Pending Approval"].includes(claim.status));
       case "ai-decisions":
-        return claimsData.filter(claim => claim.status === "AI Processing");
+        return allClaims.filter(claim => claim.status === "AI Processing");
       case "investigation":
-        return claimsData.filter(claim => claim.status === "Investigation Required");
+        return allClaims.filter(claim => claim.status === "Investigation Required");
       case "closed":
-        return claimsData.filter(claim => claim.status === "Approved");
+        return allClaims.filter(claim => claim.status === "Approved");
       default:
-        return claimsData;
+        return allClaims;
     }
   };
 
@@ -257,7 +283,11 @@ const Dashboard = () => {
                       <TableCell>{claim.submittedDate}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          <Button variant="ghost" size="sm">
+                          <Button 
+                            variant="ghost" 
+                            size="sm"
+                            onClick={() => navigate(`/claim-details/${claim.id}`)}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
                           <Button variant="ghost" size="sm">

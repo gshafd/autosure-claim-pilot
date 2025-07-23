@@ -58,13 +58,32 @@ const ReportClaim = () => {
       return;
     }
     
-    // Simulate claim creation and redirect to tracking
+    // Create claim object
     const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
-    console.log("Quick claim submitted:", { claimId, files: formData.files });
+    const newClaim = {
+      id: claimId,
+      claimantName: formData.name || "Quick Upload Customer",
+      email: formData.email || "customer@email.com",
+      policyNumber: formData.policyNumber || "POL-" + Math.random().toString(36).substr(2, 6).toUpperCase(),
+      status: "AI Processing",
+      estimatedPayout: "$1,350",
+      damageType: "Collision",
+      confidenceScore: 92,
+      submittedAt: new Date().toISOString(),
+      files: formData.files,
+      workflowType: "quick"
+    };
     
-    // Show success message and redirect
-    alert(`Claim ${claimId} submitted successfully! Redirecting to tracking page...`);
-    navigate("/track-claim");
+    // Store in localStorage for dashboard access
+    const existingClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+    existingClaims.push(newClaim);
+    localStorage.setItem('submittedClaims', JSON.stringify(existingClaims));
+    
+    console.log("Quick claim submitted:", newClaim);
+    
+    // Show success message and redirect to workflow visualization
+    alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
+    navigate(`/workflow-visualization?claimId=${claimId}`);
   };
 
   const handleGuidedSubmit = () => {
@@ -74,12 +93,38 @@ const ReportClaim = () => {
       return;
     }
     
+    // Create claim object
     const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
-    console.log("Guided claim submitted:", { claimId, formData });
+    const newClaim = {
+      id: claimId,
+      claimantName: formData.name,
+      email: formData.email,
+      policyNumber: formData.policyNumber,
+      status: "AI Processing",
+      estimatedPayout: "$1,850",
+      damageType: "Collision",
+      confidenceScore: 95,
+      submittedAt: new Date().toISOString(),
+      files: formData.files,
+      workflowType: "guided",
+      incidentDetails: {
+        date: formData.incidentDate,
+        time: formData.incidentTime,
+        location: formData.location,
+        description: formData.description
+      }
+    };
     
-    // Show success message and redirect
-    alert(`Claim ${claimId} submitted successfully! Redirecting to tracking page...`);
-    navigate("/track-claim");
+    // Store in localStorage for dashboard access
+    const existingClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+    existingClaims.push(newClaim);
+    localStorage.setItem('submittedClaims', JSON.stringify(existingClaims));
+    
+    console.log("Guided claim submitted:", newClaim);
+    
+    // Show success message and redirect to workflow visualization
+    alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
+    navigate(`/workflow-visualization?claimId=${claimId}`);
   };
 
   const renderQuickUploadFlow = () => {
