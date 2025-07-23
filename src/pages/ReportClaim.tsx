@@ -83,7 +83,7 @@ const ReportClaim = () => {
     
     // Show success message and redirect to workflow visualization
     alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
-    navigate(`/workflow-visualization?claimId=${claimId}`);
+    navigate(`/workflow?claimId=${claimId}`);
   };
 
   const handleGuidedSubmit = () => {
@@ -124,7 +124,7 @@ const ReportClaim = () => {
     
     // Show success message and redirect to workflow visualization
     alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
-    navigate(`/workflow-visualization?claimId=${claimId}`);
+    navigate(`/workflow?claimId=${claimId}`);
   };
 
   const renderQuickUploadFlow = () => {
