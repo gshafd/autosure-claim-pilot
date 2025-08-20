@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import ReportClaim from "./pages/ReportClaim";
+import CommercialReportClaim from "./pages/CommercialReportClaim";
 import TrackClaim from "./pages/TrackClaim";
 import HelpCenter from "./pages/HelpCenter";
 import Dashboard from "./pages/Dashboard";
@@ -23,6 +24,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/report-claim" element={<ReportClaim />} />
+          <Route path="/commercial-report-claim" element={<CommercialReportClaim />} />
           <Route path="/track-claim" element={<TrackClaim />} />
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/dashboard" element={<Dashboard />} />
