@@ -37,10 +37,10 @@ const features = [
 ];
 
 const stats = [
-  { label: "Claims Processed", value: "50,000+", icon: FileText },
-  { label: "Average Processing Time", value: "2.3 hours", icon: Clock },
-  { label: "Customer Satisfaction", value: "98%", icon: Users },
-  { label: "Total Payouts", value: "$25M+", icon: DollarSign }
+  { label: "Commercial Claims Processed", value: "15,000+", icon: FileText },
+  { label: "Average Processing Time", value: "1.8 hours", icon: Clock },
+  { label: "Fleet Owner Satisfaction", value: "97%", icon: Users },
+  { label: "Total Commercial Payouts", value: "$85M+", icon: DollarSign }
 ];
 
 const Index = () => {
@@ -59,21 +59,21 @@ const Index = () => {
                   AI-Powered Insurance Claims
                 </Badge>
                 <h1 className="text-4xl lg:text-6xl font-bold text-foreground leading-tight">
-                  Claims Processing{" "}
+                  Commercial Fleet{" "}
                   <span className="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent">
-                    Reimagined
+                    Claims Revolution
                   </span>
                 </h1>
                 <p className="text-xl text-muted-foreground leading-relaxed">
-                  Submit your auto insurance claim in minutes and get instant AI-powered processing. 
-                  Fast, transparent, and available 24/7.
+                  Submit your commercial auto FNOL in minutes with AI-powered fleet processing. 
+                  Handle multiple vehicles, complex policies, and instant claim validation.
                 </p>
               </div>
               
               <div className="flex flex-col sm:flex-row gap-4">
-                <Link to="/report-claim">
+                <Link to="/commercial-report-claim">
                   <Button size="lg" variant="hero" className="text-lg py-6 px-8">
-                    Report a Claim Now
+                    Report Commercial FNOL
                     <ArrowRight className="h-5 w-5" />
                   </Button>
                 </Link>
@@ -100,7 +100,7 @@ const Index = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-3xl blur-3xl" />
               <img 
                 src={heroImage} 
-                alt="Family with their car protected by AutoSure AI"
+                alt="Commercial fleet protected by AI claims processing"
                 className="relative rounded-3xl shadow-2xl w-full h-auto"
               />
             </div>
@@ -135,10 +135,10 @@ const Index = () => {
               How It Works
             </Badge>
             <h2 className="text-3xl lg:text-4xl font-bold text-foreground mb-4">
-              The Future of Insurance Claims
+              The Future of Commercial Fleet Claims
             </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Our AI agents work around the clock to process your claims with unprecedented speed and accuracy.
+              Our AI agents handle complex fleet policies, multi-vehicle incidents, and cargo claims with precision.
             </p>
           </div>
           
@@ -162,7 +162,7 @@ const Index = () => {
                 <h3 className="font-semibold">1. Upload Evidence</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Simply upload photos of damage, police reports, and any relevant documents. Our AI understands it all.
+                Upload FNOL forms, fleet schedules, damage photos, police reports, and cargo documentation. Our AI processes it all.
               </p>
             </Card>
             
@@ -172,7 +172,7 @@ const Index = () => {
                 <h3 className="font-semibold">2. AI Analysis</h3>
               </div>
               <p className="text-sm text-muted-foreground">
-                Our AI agents instantly analyze your claim, verify coverage, and calculate fair compensation.
+                Our AI agents validate fleet policies, assign adjusters by expertise, and assess multi-vehicle incidents.
               </p>
             </Card>
             
@@ -193,15 +193,15 @@ const Index = () => {
       <section className="py-20 bg-gradient-to-r from-primary to-primary-dark text-white">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold mb-4">
-            Ready to Experience the Future?
+            Ready for Commercial Fleet Excellence?
           </h2>
           <p className="text-xl opacity-90 mb-8 max-w-2xl mx-auto">
-            Join thousands of customers who've already experienced lightning-fast claim processing with AutoSure AI.
+            Join fleet operators who've revolutionized their claims process with AI-powered FNOL processing.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/report-claim">
+            <Link to="/commercial-report-claim">
               <Button size="lg" variant="outline" className="bg-white text-primary hover:bg-white/90 border-white">
-                Start Your Claim
+                Start Commercial FNOL
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </Link>
@@ -223,10 +223,10 @@ const Index = () => {
                 <div className="flex items-center justify-center w-8 h-8 bg-gradient-to-r from-primary to-primary-dark rounded-lg">
                   <Shield className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-lg font-bold text-foreground">AutoSure Claims AI</span>
+                <span className="text-lg font-bold text-foreground">Commercial Auto Claims AI</span>
               </div>
               <p className="text-muted-foreground mb-4">
-                Revolutionizing insurance claims with AI-powered processing. Fast, fair, and transparent.
+                Revolutionizing commercial fleet claims with AI-powered FNOL processing. Fast, fair, and transparent.
               </p>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <Phone className="h-4 w-4" />
@@ -237,7 +237,7 @@ const Index = () => {
             <div>
               <h4 className="font-semibold text-foreground mb-4">Services</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <Link to="/report-claim" className="block hover:text-primary">Report a Claim</Link>
+                <Link to="/commercial-report-claim" className="block hover:text-primary">Report Commercial FNOL</Link>
                 <Link to="/track-claim" className="block hover:text-primary">Track Claim</Link>
                 <Link to="/help-center" className="block hover:text-primary">Help Center</Link>
                 <Link to="/workflow" className="block hover:text-primary">How It Works</Link>
@@ -256,7 +256,7 @@ const Index = () => {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 AutoSure Claims AI. All rights reserved.</p>
+            <p>&copy; 2024 Commercial Auto Claims AI. All rights reserved.</p>
           </div>
         </div>
       </footer>

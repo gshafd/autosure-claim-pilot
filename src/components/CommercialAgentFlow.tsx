@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { 
   CheckCircle, 
   Clock, 
@@ -37,48 +38,64 @@ export const CommercialAgentFlow = ({ claimData, isActive }: CommercialAgentFlow
     {
       id: "fnol-intake",
       name: "FNOL Intake Agent",
-      description: "Collecting and structuring loss data from submitted FNOL",
+      description: "Extracting information from uploaded FNOL forms, fleet schedules, and documents",
       icon: FileText,
       status: 'pending'
     },
     {
       id: "validation",
-      name: "Claim Validation Agent", 
-      description: "Validating policy number, fleet schedule, and driver authorization",
+      name: "Validation Agent", 
+      description: "Cross-checking policies, fleet, drivers and validating policy period and matching details",
       icon: Shield,
+      status: 'pending'
+    },
+    {
+      id: "fraud-detection",
+      name: "Fraud Detection Agent",
+      description: "Detecting suspicious claims and staged accidents using AI pattern recognition",
+      icon: Search,
+      status: 'pending'
+    },
+    {
+      id: "claim-creation",
+      name: "Claim Creation Agent",
+      description: "Creating claim in CMS, assigning adjuster by expertise & bandwidth, generating claim number",
+      icon: Calculator,
       status: 'pending'
     },
     {
       id: "coverage",
       name: "Coverage Verification Agent",
-      description: "Matching loss type with available coverages (Collision, Comprehensive, Cargo, Liability)",
-      icon: Search,
-      status: 'pending'
-    },
-    {
-      id: "adjuster",
-      name: "Adjuster Assignment Agent",
-      description: "Assigning adjuster based on state, claim type, and current workload",
+      description: "Deciding what's covered and what's not based on policy terms and incident details",
       icon: Users,
       status: 'pending'
     },
     {
-      id: "file-creation",
-      name: "Claim File Creation Agent",
-      description: "Generating claim record in CMS with unique claim number",
+      id: "damage-assessment",
+      name: "Damage Assessment Agent",
+      description: "Assessing damage/loss based on evidence and estimating overall loss/cost amount",
       icon: Calculator,
       status: 'pending'
     },
     {
-      id: "notification",
-      name: "Notification Agent",
-      description: "Sending notifications and updating downstream systems",
+      id: "settlement",
+      name: "Settlement Agent",
+      description: "Calculating payout with deductibles & liability applied for final settlement",
+      icon: Calculator,
+      status: 'pending'
+    },
+    {
+      id: "communication",
+      name: "Communication Agent",
+      description: "Drafting professional payout email to fleet owners/brokers and updating systems",
       icon: Send,
       status: 'pending'
     }
   ];
 
   const [steps, setSteps] = useState(agentSteps);
+  const [agentOutputs, setAgentOutputs] = useState<Record<string, any>>({});
+  const [editableOutputs, setEditableOutputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!isActive) return;
@@ -96,14 +113,28 @@ export const CommercialAgentFlow = ({ claimData, isActive }: CommercialAgentFlow
         await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 2000));
 
         // Mark as completed with results
+        const stepResult = getStepResult(steps[i].id);
         setSteps(prev => prev.map((step, index) => 
           index === i ? { 
             ...step, 
             status: 'completed',
             duration: `${(2 + Math.random() * 3).toFixed(1)}s`,
-            result: getStepResult(step.id)
+            result: stepResult.text
           } : step
         ));
+        
+        // Store agent output
+        setAgentOutputs(prev => ({
+          ...prev,
+          [steps[i].id]: stepResult.json
+        }));
+        
+        // Initialize editable output
+        setEditableOutputs(prev => ({
+          ...prev,
+          [steps[i].id]: JSON.stringify(stepResult.json, null, 2)
+        }));
+        
         setProgress(((i + 1) / steps.length) * 100);
       }
     };
@@ -112,22 +143,90 @@ export const CommercialAgentFlow = ({ claimData, isActive }: CommercialAgentFlow
   }, [isActive]);
 
   const getStepResult = (stepId: string) => {
-    switch (stepId) {
-      case "fnol-intake":
-        return "Structured loss data extracted. Policy: CAI-2024-987654, Fleet: 3 vehicles, Location: Dallas, TX";
-      case "validation":
-        return "✓ Policy active ✓ Driver authorized ✓ Fleet schedule verified";
-      case "coverage":
-        return "Applicable: Collision ($1M), Comprehensive ($500K), General Liability ($2M)";
-      case "adjuster":
-        return "Assigned: Sarah Martinez (Commercial Auto Specialist, Dallas region, 12 open claims)";
-      case "file-creation":
-        return `Claim ${claimData?.claimId || 'CAI-2024-123456'} created in CMS. File packet generated.`;
-      case "notification":
-        return "Email sent to fleet owner. SharePoint updated. Dashboard synchronized.";
-      default:
-        return "Processing completed successfully";
-    }
+    const results = {
+      "fnol-intake": {
+        json: {
+          policy: "CAI-2024-987654",
+          fleetOwner: "ABC Logistics Inc",
+          dotNumber: "DOT-123456",
+          incidentDate: "2024-01-15",
+          location: "I-35, Dallas, TX",
+          vehiclesInvolved: ["VIN-ABC123", "VIN-XYZ789"],
+          driverInfo: { name: "John Smith", cdl: "TX-CDL-456" }
+        },
+        text: "FNOL data extracted from uploaded documents"
+      },
+      "validation": {
+        json: {
+          policyStatus: "Active",
+          policyPeriod: "2024-01-01 to 2024-12-31",
+          fleetMatch: "Verified",
+          driverAuthorized: "Valid CDL",
+          validation: "PASSED"
+        },
+        text: "✓ Policy active ✓ Driver authorized ✓ Fleet schedule verified"
+      },
+      "fraud-detection": {
+        json: {
+          riskScore: 15,
+          indicators: [],
+          recommendation: "PROCEED",
+          confidence: 98
+        },
+        text: "Low fraud risk detected. Claim cleared for processing."
+      },
+      "claim-creation": {
+        json: {
+          claimNumber: claimData?.claimId || 'CAI-2024-123456',
+          adjuster: {
+            name: "Sarah Martinez",
+            specialty: "Commercial Auto",
+            region: "Dallas",
+            openClaims: 12
+          },
+          status: "CREATED"
+        },
+        text: `Claim ${claimData?.claimId || 'CAI-2024-123456'} created. Adjuster assigned.`
+      },
+      "coverage": {
+        json: {
+          collision: { covered: true, limit: "$1M", deductible: "$2,500" },
+          comprehensive: { covered: true, limit: "$500K", deductible: "$1,000" },
+          liability: { covered: true, limit: "$2M", deductible: "$0" },
+          cargo: { covered: false, reason: "Not applicable for this incident" }
+        },
+        text: "Coverage verified: Collision, Comprehensive, General Liability"
+      },
+      "damage-assessment": {
+        json: {
+          vehicle1: { damage: "Front-end collision", estimate: "$15,000" },
+          vehicle2: { damage: "Rear-end damage", estimate: "$8,500" },
+          totalLoss: "$23,500",
+          confidence: 94
+        },
+        text: "Total estimated damage: $23,500 across 2 vehicles"
+      },
+      "settlement": {
+        json: {
+          grossAmount: "$23,500",
+          deductibles: "$3,500",
+          netPayout: "$20,000",
+          paymentMethod: "ACH Transfer"
+        },
+        text: "Settlement calculated: $20,000 after deductibles"
+      },
+      "communication": {
+        json: {
+          emailDrafted: true,
+          recipient: "claims@abclogistics.com",
+          ccBroker: "broker@insurance.com",
+          systemsUpdated: ["CMS", "SharePoint", "Dashboard"]
+        },
+        text: "Professional email drafted and systems updated"
+      }
+    };
+    
+    return results[stepId] || { json: {}, text: "Processing completed successfully" };
   };
 
   const getStatusIcon = (status: string) => {
@@ -219,8 +318,51 @@ export const CommercialAgentFlow = ({ claimData, isActive }: CommercialAgentFlow
                 <p className="text-sm text-muted-foreground mb-2">{step.description}</p>
                 
                 {step.result && (
-                  <div className="bg-muted/50 rounded-md p-3 text-sm">
-                    <strong>Result:</strong> {step.result}
+                  <div className="bg-muted/50 rounded-md p-3 text-sm space-y-2">
+                    <div><strong>Result:</strong> {step.result}</div>
+                    {agentOutputs[step.id] && (
+                      <div className="space-y-2">
+                        <strong>Agent Output (JSON):</strong>
+                        <textarea
+                          value={editableOutputs[step.id] || ''}
+                          onChange={(e) => setEditableOutputs(prev => ({
+                            ...prev,
+                            [step.id]: e.target.value
+                          }))}
+                          className="w-full h-32 p-2 text-xs font-mono bg-background border rounded resize-none"
+                          placeholder="Agent output JSON..."
+                        />
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            try {
+                              const parsed = JSON.parse(editableOutputs[step.id]);
+                              setAgentOutputs(prev => ({
+                                ...prev,
+                                [step.id]: parsed
+                              }));
+                              
+                              // Update dashboard with final edited version
+                              const existingClaims = JSON.parse(localStorage.getItem('submittedCommercialClaims') || '[]');
+                              const updatedClaims = existingClaims.map((claim: any) => 
+                                claim.claimId === claimData?.claimId 
+                                  ? { ...claim, agentOutputs: { ...claim.agentOutputs, [step.id]: parsed } }
+                                  : claim
+                              );
+                              localStorage.setItem('submittedCommercialClaims', JSON.stringify(updatedClaims));
+                              
+                              alert('Output updated and saved to dashboard!');
+                            } catch (error) {
+                              alert('Invalid JSON format. Please fix and try again.');
+                            }
+                          }}
+                          className="text-xs"
+                        >
+                          Save Changes
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

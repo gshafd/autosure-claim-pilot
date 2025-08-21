@@ -5,7 +5,7 @@ import { useState } from "react";
 
 const navItems = [
   { name: "Home", href: "/" },
-  { name: "Report a Claim", href: "/report-claim" },
+  { name: "Report Commercial FNOL", href: "/commercial-report-claim" },
   { name: "Track Claim", href: "/track-claim" },
   { name: "Help Center", href: "/help-center" }
 ];
@@ -23,7 +23,7 @@ export const Navbar = () => {
             <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-primary to-primary-dark rounded-lg">
               <Shield className="h-6 w-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-foreground">AutoSure Claims AI</span>
+            <span className="text-xl font-bold text-foreground">Commercial Auto Claims AI</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -50,9 +50,9 @@ export const Navbar = () => {
                 Agent Portal
               </Button>
             </Link>
-            <Link to="/report-claim">
+            <Link to="/commercial-report-claim">
               <Button size="sm" className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90">
-                Report Claim Now
+                Report FNOL Now
               </Button>
             </Link>
           </div>
@@ -92,9 +92,9 @@ export const Navbar = () => {
                     Agent Portal
                   </Button>
                 </Link>
-                <Link to="/report-claim">
+                <Link to="/commercial-report-claim">
                   <Button size="sm" className="w-full bg-gradient-to-r from-primary to-primary-dark hover:opacity-90">
-                    Report Claim Now
+                    Report FNOL Now
                   </Button>
                 </Link>
               </div>

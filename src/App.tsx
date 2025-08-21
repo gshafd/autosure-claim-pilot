@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import ReportClaim from "./pages/ReportClaim";
 import CommercialReportClaim from "./pages/CommercialReportClaim";
@@ -23,7 +23,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/report-claim" element={<ReportClaim />} />
+          <Route path="/report-claim" element={<Navigate to="/commercial-report-claim" replace />} />
           <Route path="/commercial-report-claim" element={<CommercialReportClaim />} />
           <Route path="/track-claim" element={<TrackClaim />} />
           <Route path="/help-center" element={<HelpCenter />} />

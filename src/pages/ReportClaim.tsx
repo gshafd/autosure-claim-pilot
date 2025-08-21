@@ -131,8 +131,8 @@ const ReportClaim = () => {
     return (
       <div className="space-y-6">
         <div className="text-center mb-8">
-          <h2 className="text-2xl font-bold mb-4">Quick Document Upload</h2>
-          <p className="text-muted-foreground">Upload all your documents at once and let our AI extract the details</p>
+          <h2 className="text-2xl font-bold mb-4">Commercial FNOL Document Upload</h2>
+          <p className="text-muted-foreground">Upload fleet schedules, FNOL forms, and evidence - our AI extracts all details</p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -142,7 +142,7 @@ const ReportClaim = () => {
               <div className="text-center">
                 <Upload className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-xl font-semibold mb-2">Upload All Documents</h3>
-                <p className="text-muted-foreground">Police reports, damage photos, invoices, receipts</p>
+                <p className="text-muted-foreground">FNOL forms, fleet schedules, damage photos, police reports, cargo docs</p>
                 <p className="text-sm text-muted-foreground mt-2">Drag & drop or click to browse</p>
               </div>
             </label>
@@ -154,19 +154,19 @@ const ReportClaim = () => {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-success" />
-                Policy information from documents
+                Fleet policy and schedule validation
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-success" />
-                Incident date, time, and location
+                Multi-vehicle incident processing
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-success" />
-                Damage assessment from photos
+                Commercial coverage verification
               </li>
               <li className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-success" />
-                Repair costs from invoices
+                Cargo and liability assessment
               </li>
             </ul>
           </Card>
@@ -304,14 +304,25 @@ const ReportClaim = () => {
       case 3:
         return (
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <Card className="p-6 border-dashed border-2 hover:border-primary transition-colors cursor-pointer">
                 <label className="cursor-pointer">
-                  <input type="file" className="hidden" accept=".pdf" onChange={handleFileUpload} />
+                  <input type="file" className="hidden" accept=".pdf,.xlsx,.csv" onChange={handleFileUpload} />
                   <div className="text-center">
                     <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="font-semibold mb-2">Police Report</h3>
-                    <p className="text-sm text-muted-foreground">Upload PDF</p>
+                    <h3 className="font-semibold mb-2">FNOL Forms</h3>
+                    <p className="text-sm text-muted-foreground">Upload PDF/Excel</p>
+                  </div>
+                </label>
+              </Card>
+              
+              <Card className="p-6 border-dashed border-2 hover:border-primary transition-colors cursor-pointer">
+                <label className="cursor-pointer">
+                  <input type="file" className="hidden" accept=".xlsx,.csv" onChange={handleFileUpload} />
+                  <div className="text-center">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-semibold mb-2">Fleet Schedule</h3>
+                    <p className="text-sm text-muted-foreground">Upload Excel/CSV</p>
                   </div>
                 </label>
               </Card>
@@ -322,7 +333,7 @@ const ReportClaim = () => {
                   <div className="text-center">
                     <Camera className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                     <h3 className="font-semibold mb-2">Damage Photos</h3>
-                    <p className="text-sm text-muted-foreground">Upload 2-3 images</p>
+                    <p className="text-sm text-muted-foreground">Upload vehicle/cargo</p>
                   </div>
                 </label>
               </Card>
@@ -331,9 +342,20 @@ const ReportClaim = () => {
                 <label className="cursor-pointer">
                   <input type="file" className="hidden" accept=".pdf,.jpg,.png" onChange={handleFileUpload} />
                   <div className="text-center">
+                    <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                    <h3 className="font-semibold mb-2">Police Reports</h3>
+                    <p className="text-sm text-muted-foreground">Upload PDF/Images</p>
+                  </div>
+                </label>
+              </Card>
+              
+              <Card className="p-6 border-dashed border-2 hover:border-primary transition-colors cursor-pointer">
+                <label className="cursor-pointer">
+                  <input type="file" className="hidden" accept=".pdf,.xlsx,.jpg,.png" onChange={handleFileUpload} />
+                  <div className="text-center">
                     <Receipt className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                    <h3 className="font-semibold mb-2">Invoices / Bills</h3>
-                    <p className="text-sm text-muted-foreground">Upload receipts</p>
+                    <h3 className="font-semibold mb-2">Documents</h3>
+                    <p className="text-sm text-muted-foreground">Bills of lading, etc.</p>
                   </div>
                 </label>
               </Card>
@@ -404,8 +426,8 @@ const ReportClaim = () => {
             {/* Main Content */}
             <div className="lg:col-span-3">
               <div className="mb-8">
-                <h1 className="text-3xl font-bold text-foreground mb-2">Report a Claim</h1>
-                <p className="text-muted-foreground">Choose your preferred filing method</p>
+                <h1 className="text-3xl font-bold text-foreground mb-2">Report Commercial Auto FNOL</h1>
+                <p className="text-muted-foreground">Submit First Notice of Loss for your commercial fleet</p>
               </div>
               
               {/* Workflow Selection */}
