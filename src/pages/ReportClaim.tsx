@@ -11,7 +11,7 @@ import { ArrowLeft, ArrowRight, Upload, MapPin, Calendar, User, FileText, Camera
 import { Navbar } from "@/components/Navbar";
 
 const steps = [
-  { id: 1, title: "Claimant Details", icon: User },
+  { id: 1, title: "Fleet Owner Details", icon: User },
   { id: 2, title: "Incident Details", icon: FileText },
   { id: 3, title: "Upload Evidence", icon: Upload },
   { id: 4, title: "Confirm & Submit", icon: CheckCircle }
@@ -58,31 +58,35 @@ const ReportClaim = () => {
       return;
     }
     
-    // Create claim object
-    const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
+    // Create commercial claim object
+    const claimId = "CAI-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
     const newClaim = {
-      id: claimId,
-      claimantName: formData.name || "Quick Upload Customer",
-      email: formData.email || "customer@email.com",
+      claimId: claimId,
       policyNumber: formData.policyNumber || "POL-" + Math.random().toString(36).substr(2, 6).toUpperCase(),
-      status: "AI Processing",
-      estimatedPayout: "$1,350",
-      damageType: "Collision",
-      confidenceScore: 92,
+      fleetOwner: formData.name || "Fleet Owner",
+      contactPerson: formData.name || "Contact Person",
+      email: formData.email || "fleet@example.com",
+      incidentDate: formData.incidentDate || new Date().toISOString().split('T')[0],
+      incidentLocation: formData.location || "Location TBD",
+      description: formData.description || "Commercial fleet incident - details extracted from uploaded documents",
+      vehiclesInvolved: ["Vehicle details to be extracted from documents"],
+      status: "Processing",
       submittedAt: new Date().toISOString(),
-      files: formData.files,
-      workflowType: "quick"
+      files: formData.files.map(file => ({ name: file.name, size: file.size, type: file.type })),
+      workflowType: "quick",
+      assignedAdjuster: "To be assigned",
+      estimatedAmount: "$TBD"
     };
     
-    // Store in localStorage for dashboard access
-    const existingClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+    // Store in localStorage for dashboard access (using commercial claims key)
+    const existingClaims = JSON.parse(localStorage.getItem('submittedCommercialClaims') || '[]');
     existingClaims.push(newClaim);
-    localStorage.setItem('submittedClaims', JSON.stringify(existingClaims));
+    localStorage.setItem('submittedCommercialClaims', JSON.stringify(existingClaims));
     
-    console.log("Quick claim submitted:", newClaim);
+    console.log("Commercial FNOL submitted:", newClaim);
     
     // Show success message and redirect to workflow visualization
-    alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
+    alert(`Commercial FNOL ${claimId} submitted successfully! Watch the AI processing...`);
     navigate(`/workflow?claimId=${claimId}`);
   };
 
@@ -93,20 +97,24 @@ const ReportClaim = () => {
       return;
     }
     
-    // Create claim object
-    const claimId = "AS-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
+    // Create commercial claim object
+    const claimId = "CAI-" + new Date().getFullYear() + "-" + String(Date.now()).slice(-6);
     const newClaim = {
-      id: claimId,
-      claimantName: formData.name,
-      email: formData.email,
+      claimId: claimId,
       policyNumber: formData.policyNumber,
-      status: "AI Processing",
-      estimatedPayout: "$1,850",
-      damageType: "Collision",
-      confidenceScore: 95,
+      fleetOwner: formData.name,
+      contactPerson: formData.name,
+      email: formData.email,
+      incidentDate: formData.incidentDate,
+      incidentLocation: formData.location,
+      description: formData.description,
+      vehiclesInvolved: ["Details from incident report"],
+      status: "Processing",
       submittedAt: new Date().toISOString(),
-      files: formData.files,
+      files: formData.files.map(file => ({ name: file.name, size: file.size, type: file.type })),
       workflowType: "guided",
+      assignedAdjuster: "To be assigned",
+      estimatedAmount: "$TBD",
       incidentDetails: {
         date: formData.incidentDate,
         time: formData.incidentTime,
@@ -115,15 +123,15 @@ const ReportClaim = () => {
       }
     };
     
-    // Store in localStorage for dashboard access
-    const existingClaims = JSON.parse(localStorage.getItem('submittedClaims') || '[]');
+    // Store in localStorage for dashboard access (using commercial claims key)
+    const existingClaims = JSON.parse(localStorage.getItem('submittedCommercialClaims') || '[]');
     existingClaims.push(newClaim);
-    localStorage.setItem('submittedClaims', JSON.stringify(existingClaims));
+    localStorage.setItem('submittedCommercialClaims', JSON.stringify(existingClaims));
     
-    console.log("Guided claim submitted:", newClaim);
+    console.log("Guided commercial FNOL submitted:", newClaim);
     
     // Show success message and redirect to workflow visualization
-    alert(`Claim ${claimId} submitted successfully! Watch the AI processing...`);
+    alert(`Commercial FNOL ${claimId} submitted successfully! Watch the AI processing...`);
     navigate(`/workflow?claimId=${claimId}`);
   };
 
@@ -138,7 +146,7 @@ const ReportClaim = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="p-8 border-dashed border-2 hover:border-primary transition-colors cursor-pointer">
             <label className="cursor-pointer">
-              <input type="file" className="hidden" accept=".pdf,image/*" multiple onChange={handleFileUpload} />
+              <input type="file" className="hidden" accept=".pdf,.xlsx,.csv,image/*" multiple onChange={handleFileUpload} />
               <div className="text-center">
                 <Upload className="h-16 w-16 mx-auto mb-4 text-muted-foreground" />
                 <h3 className="text-xl font-semibold mb-2">Upload All Documents</h3>
@@ -208,21 +216,21 @@ const ReportClaim = () => {
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="name">Full Name</Label>
+                <Label htmlFor="name">Fleet Owner / Contact Person</Label>
                 <Input 
                   id="name" 
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="John Doe" 
+                  placeholder="ABC Logistics Inc" 
                 />
               </div>
               <div>
-                <Label htmlFor="phone">Phone Number</Label>
+                <Label htmlFor="phone">DOT Number (Optional)</Label>
                 <Input 
                   id="phone" 
                   value={formData.phone}
                   onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="(555) 123-4567" 
+                  placeholder="DOT-123456" 
                 />
               </div>
               <div>
@@ -232,16 +240,16 @@ const ReportClaim = () => {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                  placeholder="john@example.com" 
+                  placeholder="fleet@abclogistics.com" 
                 />
               </div>
               <div>
-                <Label htmlFor="policy">Policy Number</Label>
+                <Label htmlFor="policy">Commercial Policy Number</Label>
                 <Input 
                   id="policy" 
                   value={formData.policyNumber}
                   onChange={(e) => setFormData(prev => ({ ...prev, policyNumber: e.target.value }))}
-                  placeholder="AS-123456789" 
+                  placeholder="CAI-123456789" 
                 />
               </div>
             </div>
@@ -280,10 +288,10 @@ const ReportClaim = () => {
                   <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                   <Input 
                     id="location" 
-                    value={formData.location}
-                    onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="123 Main St, City, State 12345" 
-                    className="pl-10"
+                  value={formData.location}
+                  onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
+                  placeholder="I-35 North, Dallas, TX 75201" 
+                  className="pl-10"
                   />
                 </div>
               </div>
@@ -293,7 +301,7 @@ const ReportClaim = () => {
                   id="description" 
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Please describe what happened in detail..."
+                  placeholder="Describe the commercial fleet incident, vehicles involved, cargo damage if any..."
                   rows={4}
                 />
               </div>
@@ -383,7 +391,7 @@ const ReportClaim = () => {
               <h3 className="font-semibold mb-4">Claim Summary</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p><strong>Claimant:</strong> {formData.name}</p>
+                  <p><strong>Fleet Owner:</strong> {formData.name}</p>
                   <p><strong>Policy:</strong> {formData.policyNumber}</p>
                   <p><strong>Email:</strong> {formData.email}</p>
                 </div>
@@ -405,7 +413,7 @@ const ReportClaim = () => {
                 onClick={handleGuidedSubmit}
                 className="bg-gradient-to-r from-primary to-primary-dark hover:opacity-90 text-white font-semibold py-3 px-8"
               >
-                Submit Claim to AI Agent
+                Submit Commercial FNOL
               </Button>
             </div>
           </div>
